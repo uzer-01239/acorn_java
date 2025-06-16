@@ -28,7 +28,6 @@ public class MainClass04 {
 		int code5=ch5;
 		int code6=ch6;
 		
-		
 	}
 
 }
