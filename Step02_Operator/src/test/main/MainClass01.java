@@ -36,7 +36,10 @@ public class MainClass01 {
 		byte c = (byte)b;
 		int d = 1000;
 		byte e = (byte)d;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin
 		
 	}
 
