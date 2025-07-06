@@ -10,7 +10,7 @@ public class MainClass02 {
 		
 		// 이미 만들어진 변수에 있는 내용ㅇ르 변수명으로 전달
 		String str="kimgura";
-		sendMessage(str);
+		MainClass02.sendMessage(str);
 	}
 	
 	// 메시지를 전송하는 기능을 가진 가상의 메소드
