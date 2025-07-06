@@ -46,7 +46,7 @@ public class ToBuyDao {
 				dto.setItem(rs.getString("item"));
 				dto.setProduct(rs.getString("product"));
 				dto.setPrice(rs.getInt("price"));
-				dto.setLink(rs.getURL("link"));
+				dto.setLink(rs.getString("link"));
 				
 				
 			}
@@ -80,7 +80,7 @@ public class ToBuyDao {
 			String sql="""
 					SELECT num, item, product, price, link
 					FROM tobuy
-					ORDER BY item AND product ASC
+					ORDER BY num ASC
 					""";
 			pstmt=conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
@@ -88,10 +88,10 @@ public class ToBuyDao {
 			while (rs.next()) {
 				ToBuyDto dto=new ToBuyDto();
 				dto.setNum(rs.getInt("num"));
-				dto.setItem("item");
-				dto.setProduct("product");
-				dto.setPrice("price");
-				dto.setLink("link");
+				dto.setItem(rs.getString("item"));
+				dto.setProduct(rs.getString("product"));
+				dto.setPrice(rs.getInt("price"));
+				dto.setLink(rs.getString("link"));
 				
 				list.add(dto);
 			}
@@ -106,12 +106,52 @@ public class ToBuyDao {
 					pstmt.close();
 				if(conn!=null)
 					conn.close();
-			} catch (Exception e2) {
-				
-			}
-			return list;
+			} catch (Exception e2) {}
+		}
+		return list;
+	}
+	
+	//INSERT 메소드
+	public boolean insert(ToBuyDto dto) {
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		
+		//변화된 row 갯수=0 으로 초기화
+		int rowCount=0;
+		
+		try {conn=new DBConnector().getConn();
+			String sql="""
+					INSERT INTO tobuy
+					(num, item, product, price, link)
+					VALUES (tobuy_seq.NEXTVAL, ?, ?, ?, ?)
+					""";
+			pstmt=conn.prepareStatement(sql);
+			//?값 바인딩
+			pstmt.setString(1, dto.getItem());
+			pstmt.setString(2, dto.getProduct());
+			pstmt.setInt(3, dto.getPrice());
+			pstmt.setString(4, dto.getLink());
+			
+			rowCount = pstmt.executeUpdate();
+			
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				if(conn != null)
+					conn.close();
+			} catch (Exception e) {}
+		}
+		if(rowCount > 0){
+			return true;
+		}else {
+			return false;
 		}
 	}
+	
 	
 	//UPDATE 메소드
 	public boolean update(ToBuyDto dto) {
@@ -125,19 +165,20 @@ public class ToBuyDao {
 			conn=new DBConnector().getConn();
 			String sql="""
 					UPDATE tobuy
-					SET num=?, 
-					item=?,
+					SET	item=?,
 					product=?,
 					price=?,
 					link=?
+					WHERE num=?
 					""";
 			pstmt=conn.prepareStatement(sql);
 			//?에 들어갈 값 바인딩
-			pstmt.setInt(1, dto.getNum());
-			pstmt.setString(2, "item");
-			pstmt.setString(3, "product");
-			pstmt.setInt(4, "price");
-			pstmt.setString(5, "link");
+			
+			pstmt.setString(1,dto.getItem());
+			pstmt.setString(2, dto.getProduct());
+			pstmt.setInt(3, dto.getPrice());
+			pstmt.setString(4, dto.getLink().toString());
+			pstmt.setInt(5, dto.getNum());
 			
 			//변경된 row 갯수
 			rowCount=pstmt.executeUpdate();
@@ -153,6 +194,7 @@ public class ToBuyDao {
 					conn.close();
 			}catch (Exception e) {}
 		}
+		return rowCount>0;
 	}
 	
 }

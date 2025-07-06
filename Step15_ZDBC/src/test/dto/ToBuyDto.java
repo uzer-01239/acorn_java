@@ -7,7 +7,7 @@ public class ToBuyDto {
 	private String item;
 	private String product;
 	private int price;
-	private URL link;
+	private String link;
 	
 	
 	//생성자
@@ -47,11 +47,11 @@ public class ToBuyDto {
 		this.price = price;
 	}
 
-	public URL getLink() {
+	public String getLink() {
 		return link;
 	}
 
-	public void setLink(URL link) {
+	public void setLink(String link) {
 		this.link = link;
 	}
 

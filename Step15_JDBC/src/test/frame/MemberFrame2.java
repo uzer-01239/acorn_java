@@ -119,11 +119,11 @@ public class MemberFrame2 extends JFrame{
 			
 			//JPanel 을 전달하면서 ConfirmDialog를 띄운다
 			int result = JOptionPane.showConfirmDialog(
-					this, 
-					editPanel, 
-					num+" 번 회원 수정",
-					JOptionPane.OK_CANCEL_OPTION
-					);
+				this, 
+				editPanel, 
+				num+" 번 회원 수정",
+				JOptionPane.OK_CANCEL_OPTION
+				);
 			//리턴되는 숫자값을 테스트로 콘솔창에 출력하기--0:확인/2:취수/-1:X
 			//System.out.println(result); 
 			//만약 확인버튼을 누르면
