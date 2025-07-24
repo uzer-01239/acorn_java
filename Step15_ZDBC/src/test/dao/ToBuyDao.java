@@ -17,13 +17,15 @@ public class ToBuyDao {
 		ToBuyDto dto=null;
 		
 		//DB 연결
-		Connection conn=null;
+		
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
 		//try~catch
-		try {
-			conn=new DBConnector().getConn();
+		try (
+			var conn=new DBConnector().getConn();
+		){
+			
 			
 			//sql
 			String sql="""
@@ -51,15 +53,13 @@ public class ToBuyDao {
 				
 			}
 		}catch (Exception e) {
-			
+			e.printStackTrace();
 		}finally { //DB 종료
 			try {
 				if(rs != null)
 					rs.close();
 				if(pstmt != null)
 					pstmt.close();
-				if(conn != null)
-					conn.close();
 			}catch(Exception e) {}
 		}
 		return dto;
@@ -70,21 +70,22 @@ public class ToBuyDao {
 		
 		List<ToBuyDto> list=new ArrayList<ToBuyDto>();
 		
-		//지역변수
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn=new DBConnector().getConn();
+		
+		String sql="""
+				SELECT num, item, product, price, link
+				FROM tobuy
+				ORDER BY num ASC
+				""";
+		
+		try (
+		Connection conn=new DBConnector().getConn();
+		PreparedStatement pstmt=conn.prepareStatement(sql);	
+		ResultSet rs=pstmt.executeQuery();
+		){
 			
-			String sql="""
-					SELECT num, item, product, price, link
-					FROM tobuy
-					ORDER BY num ASC
-					""";
-			pstmt=conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
 			
+			
+						
 			while (rs.next()) {
 				ToBuyDto dto=new ToBuyDto();
 				dto.setNum(rs.getInt("num"));
@@ -98,15 +99,6 @@ public class ToBuyDao {
 					
 		}catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			try {
-				if(rs!=null)
-					rs.close();
-				if(pstmt!=null)
-					pstmt.close();
-				if(conn!=null)
-					conn.close();
-			} catch (Exception e2) {}
 		}
 		return list;
 	}
@@ -177,7 +169,7 @@ public class ToBuyDao {
 			pstmt.setString(1,dto.getItem());
 			pstmt.setString(2, dto.getProduct());
 			pstmt.setInt(3, dto.getPrice());
-			pstmt.setString(4, dto.getLink().toString());
+			pstmt.setString(4, dto.getLink());
 			pstmt.setInt(5, dto.getNum());
 			
 			//변경된 row 갯수
@@ -197,6 +189,34 @@ public class ToBuyDao {
 		return rowCount>0;
 	}
 	
+	
+	
+	//Delete 메소드
+	public boolean deleteByNum(int num) {
+		
+		int rowCount=0;
+		
+		String sql="""
+				DELETE FROM tobuy
+				WHERE num=?
+				""";
+		
+		try (
+			Connection conn=new DBConnector().getConn();
+			PreparedStatement pstmt=conn.prepareStatement(sql);
+		){
+			
+			pstmt.setInt(1, num);
+			rowCount=pstmt.executeUpdate();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return rowCount>0;
+		
+	}
+	
+
 }
 
 

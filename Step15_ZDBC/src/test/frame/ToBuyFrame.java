@@ -103,8 +103,6 @@ public class ToBuyFrame extends JFrame {
 				}
 				
 				
-				
-				
 				//저장 버튼 누르면 dto 생성
 				String item = model.getValueAt(lastRow, 1).toString();
 				String product = model.getValueAt(lastRow, 2).toString();
@@ -148,13 +146,22 @@ public class ToBuyFrame extends JFrame {
 				JOptionPane.showMessageDialog(this, "error : "+ ex.getMessage());
 				ex.printStackTrace();
 			}
-			
-			
-			//성공여부 팝업
-			
-			
-			
+
 		});
+		
+		
+		//삭제버튼 Delete
+		deleteBtn.addActionListener((e)->{
+			int selectedRow=table.getSelectedRow();
+			if(selectedRow == -1) {
+				JOptionPane.showMessageDialog(this, "select a Row!");
+				return;
+			}
+			int num=(int)model.getValueAt(selectedRow, 1);
+			dao.deleteByNum(num);
+			printToBuy();
+		});
+		
 		
 		
 	   setVisible(true);
@@ -175,9 +182,9 @@ public class ToBuyFrame extends JFrame {
 	    //마지막 빈 행 추가
 		model.addRow(new Object[]{"", "", "", "", ""});
 
-
 	}
 	
+	//메인메소드
 	public static void main(String[] args) {
 		ToBuyFrame f=new ToBuyFrame();
 		
